@@ -10,8 +10,8 @@ const Part = ({ part }) => (
 
 const Content = ({ parts }) => (
   <div>
-    {parts.map((part) => (
-      <Part part={part} />
+    {parts.map((part, i) => (
+      <Part key={i} part={part} />
     ))}
   </div>
 )
