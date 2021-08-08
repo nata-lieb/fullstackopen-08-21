@@ -2,13 +2,17 @@ import React, { useState, useEffect } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import Notification from './components/Notification'
 import * as personService from './services/persons'
+
+const initialMesssage = { text: '', error: false }
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [message, setMessage] = useState(initialMesssage)
 
   useEffect(() => {
     personService.getAll().then((response) => {
@@ -16,31 +20,58 @@ const App = () => {
     })
   }, [])
 
+  useEffect(() => {
+    message.text &&
+      setTimeout(() => {
+        setMessage(initialMesssage)
+      }, 5000)
+  }, [message])
+
   const addPerson = (event) => {
     event.preventDefault()
     const person = persons.find((person) => person.name === newName)
     if (person) {
       window.confirm(`${person.name} is already added to phonebook, replace the old number with a new one?`) &&
-        personService.update({ ...person, number: newNumber }).then((response) => {
-          setPersons(persons.map((p) => (p.id === person.id ? response.data : p)))
-          setNewName('')
-          setNewNumber('')
-        })
+        personService
+          .update({ ...person, number: newNumber })
+          .then((response) => {
+            setPersons(persons.map((p) => (p.id === person.id ? response.data : p)))
+            setNewName('')
+            setNewNumber('')
+            setMessage({ text: `Updated ${response.data.name}`, error: false })
+          })
+          .catch(() => {
+            setMessage({
+              text: `Information of ${person.name} has already been removed from server`,
+              error: true,
+            })
+            setPersons(persons.filter((p) => p.id !== person.id))
+          })
       return
     }
     personService.create({ name: newName, number: newNumber }).then((response) => {
       setPersons(persons.concat(response.data))
       setNewName('')
       setNewNumber('')
+      setMessage({ text: `Added ${response.data.name}`, error: false })
     })
   }
 
   const removePerson = (id) => {
     const personToDelete = persons.find((person) => person.id === id)
     if (id && window.confirm(`Delete ${personToDelete.name}?`)) {
-      personService.remove(id).then((response) => {
-        response.status === 200 && setPersons(persons.filter((person) => person.id !== id))
-      })
+      personService
+        .remove(id)
+        .then((response) => {
+          response.status === 200 && setPersons(persons.filter((p) => p.id !== id))
+        })
+        .catch(() => {
+          setMessage({
+            text: `Information of ${personToDelete.name} has already been removed from server`,
+            error: true,
+          })
+          setPersons(persons.filter((p) => p.id !== id))
+        })
     }
   }
 
@@ -54,6 +85,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} />
       <Filter filter={filter} handleFilterChange={handleFilterChange} />
       <h2>add a new</h2>
       <PersonForm
