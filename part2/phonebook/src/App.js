@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import * as personService from './services/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -11,20 +11,37 @@ const App = () => {
   const [filter, setFilter] = useState('')
 
   useEffect(() => {
-    axios.get('http://localhost:3001/persons').then((response) => {
+    personService.getAll().then((response) => {
       setPersons(response.data)
     })
   }, [])
 
   const addPerson = (event) => {
     event.preventDefault()
-    if (persons.findIndex((person) => person.name === newName) >= 0) {
-      window.alert(`${newName} is already added to phonebook`)
+    const person = persons.find((person) => person.name === newName)
+    if (person) {
+      window.confirm(`${person.name} is already added to phonebook, replace the old number with a new one?`) &&
+        personService.update({ ...person, number: newNumber }).then((response) => {
+          setPersons(persons.map((p) => (p.id === person.id ? response.data : p)))
+          setNewName('')
+          setNewNumber('')
+        })
       return
     }
-    setPersons(persons.concat({ name: newName, number: newNumber }))
-    setNewName('')
-    setNewNumber('')
+    personService.create({ name: newName, number: newNumber }).then((response) => {
+      setPersons(persons.concat(response.data))
+      setNewName('')
+      setNewNumber('')
+    })
+  }
+
+  const removePerson = (id) => {
+    const personToDelete = persons.find((person) => person.id === id)
+    if (id && window.confirm(`Delete ${personToDelete.name}?`)) {
+      personService.remove(id).then((response) => {
+        response.status === 200 && setPersons(persons.filter((person) => person.id !== id))
+      })
+    }
   }
 
   const handleNameChange = (e) => setNewName(e.target.value)
@@ -47,7 +64,7 @@ const App = () => {
         handleNumberChange={handleNumberChange}
       />
       <h2>Numbers</h2>
-      <Persons persons={personsToShow} />
+      <Persons persons={personsToShow} removePerson={removePerson} />
     </div>
   )
 }
