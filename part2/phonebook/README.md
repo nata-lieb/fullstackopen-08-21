@@ -29,3 +29,11 @@ You can implement the search field as an input element that is placed outside th
 If you have implemented your application in a single component, refactor it by extracting suitable parts into new components. Maintain the application's state and all event handlers in the App root component.
 
 It is sufficient to extract three components from the application. Good candidates for separate components are, for example, the search filter, the form for adding new people into the phonebook, a component that renders all people from the phonebook, and a component that renders a single person's details.
+
+#### 2.11: The Phonebook Step6
+
+We continue with developing the phonebook. Store the initial state of the application in the file db.json, which should be placed in the root of the project.
+
+Start json-server on port 3001 and make sure that the server returns the list of people by going to the address http://localhost:3001/persons in the browser.
+
+Modify the application such that the initial state of the data is fetched from the server using the axios-library. Complete the fetching with an Effect hook.
