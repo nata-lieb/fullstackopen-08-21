@@ -16,3 +16,23 @@ Content-Type: application/json
   "name": "Hello World",
   "number": "123-456"
 }
+
+
+// deployed app
+###
+get https://fso2021-part3-phonebook.herokuapp.com/api/persons
+
+###
+get https://fso2021-part3-phonebook.herokuapp.com/api/persons/1
+
+###
+delete https://fso2021-part3-phonebook.herokuapp.com/api/persons/8807
+
+###
+post https://fso2021-part3-phonebook.herokuapp.com/api/persons
+Content-Type: application/json
+
+{
+  "name": "Hello World",
+  "number": "123-456"
+}
