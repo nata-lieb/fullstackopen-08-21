@@ -86,3 +86,57 @@ Generate a production build of your frontend, and add it to the internet applica
 NB Make sure the directory build is not gitignored
 
 Also make sure that the frontend still works locally.
+
+#### 3.12: Command-line database
+
+Create a cloud-based MongoDB database for the phonebook application with MongoDB Atlas.
+
+Create a mongo.js file in the project directory, that can be used for adding entries to the phonebook, and for listing all of the existing entries in the phonebook.
+
+NB: Do not include the password in the file that you commit and push to GitHub!
+
+The application should work as follows. You use the program by passing three command-line arguments (the first is the password), e.g.:
+
+```
+node mongo.js yourpassword Anna 040-1234556
+```
+
+As a result, the application will print:
+
+```
+added Anna number 040-1234556 to phonebook
+```
+
+If the password is the only parameter given to the program, then the program should display all of the entries in the phonebook.
+
+#### 3.13: Phonebook database, step1
+
+Change the fetching of all phonebook entries so that the data is fetched from the database.
+
+Verify that the frontend works after the changes have been made.
+
+In the following exercises, write all Mongoose-specific code into its own module, just like we did in the chapter Database configuration into its own module.
+
+#### 3.14: Phonebook database, step2
+
+Change the backend so that new numbers are saved to the database. Verify that your frontend still works after the changes.
+
+At this point, you can choose to simply allow users to create all phonebook entries. At this stage, the phonebook can have multiple entries for a person with the same name.
+
+#### 3.15: Phonebook database, step3
+
+Change the backend so that deleting phonebook entries is reflected in the database.
+
+#### 3.16: Phonebook database, step4
+
+Move the error handling of the application to a new error handler middleware.
+
+#### 3.17: Phonebook database, step5
+
+If the user tries to create a new phonebook entry for a person whose name is already in the phonebook, the frontend will try to update the phone number of the existing entry by making an HTTP PUT request to the entry's unique URL.
+
+Modify the backend to support this request.
+
+#### 3.18: Phonebook database step6
+
+Also update the handling of the api/persons/:id and info routes to use the database, and verify that they work directly with the browser, Postman, or VS Code REST client.
