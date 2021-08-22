@@ -164,3 +164,7 @@ NB: On update operations, mongoose validators are off by default. Read the docum
 Generate a new "full stack" version of the application by creating a new production build of the frontend, and copy it to the backend repository. Verify that everything works locally by using the entire application from the address http://localhost:3001/.
 
 Push the latest version to Heroku and verify that everything works there as well.
+
+#### 3.22: Lint configuration
+
+Add ESlint to your application and fix all the warnings.
