@@ -40,21 +40,28 @@ const App = () => {
             setNewNumber('')
             setMessage({ text: `Updated ${response.data.name}`, error: false })
           })
-          .catch(() => {
+          .catch((error) => {
             setMessage({
-              text: `Information of ${person.name} has already been removed from server`,
+              text: error.response.data.error,
               error: true,
             })
-            setPersons(persons.filter((p) => p.id !== person.id))
           })
       return
     }
-    personService.create({ name: newName, number: newNumber }).then((response) => {
-      setPersons(persons.concat(response.data))
-      setNewName('')
-      setNewNumber('')
-      setMessage({ text: `Added ${response.data.name}`, error: false })
-    })
+    personService
+      .create({ name: newName, number: newNumber })
+      .then((response) => {
+        setPersons(persons.concat(response.data))
+        setNewName('')
+        setNewNumber('')
+        setMessage({ text: `Added ${response.data.name}`, error: false })
+      })
+      .catch((error) => {
+        setMessage({
+          text: error.response.data.error,
+          error: true,
+        })
+      })
   }
 
   const removePerson = (id) => {
@@ -65,9 +72,9 @@ const App = () => {
         .then((response) => {
           response.status === 204 && setPersons(persons.filter((p) => p.id !== id))
         })
-        .catch(() => {
+        .catch((error) => {
           setMessage({
-            text: `Information of ${personToDelete.name} has already been removed from server`,
+            text: error.response.data.error,
             error: true,
           })
           setPersons(persons.filter((p) => p.id !== id))
