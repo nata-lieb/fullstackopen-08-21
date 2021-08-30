@@ -87,4 +87,16 @@ Use async/await.
 
 The application mostly needs to update the amount of likes for a blog post. You can implement this functionality the same way that we implemented updating notes in part 3.
 
-Feel free to implement tests for the functionality if you want to. Otherwise verify that the functionality works with Postman or some other tool.
+#### 4.15: bloglist expansion, step3
+
+Implement a way to create new users by doing a HTTP POST-request to address api/users. Users have username, password and name.
+
+Do not save passwords to the database as clear text, but use the bcrypt library like we did in part 4 chapter Creating new users.
+
+Implement a way to see the details of all users by doing a suitable HTTP request.
+
+#### 4.16: bloglist expansion, step4
+
+Add a feature which adds the following restrictions to creating new users: Both username and password must be given. Both username and password must be at least 3 characters long. The username must be unique.
+
+The operation must respond with a suitable status code and some kind of an error message if invalid user is created.
