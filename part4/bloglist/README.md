@@ -100,3 +100,43 @@ Implement a way to see the details of all users by doing a suitable HTTP request
 Add a feature which adds the following restrictions to creating new users: Both username and password must be given. Both username and password must be at least 3 characters long. The username must be unique.
 
 The operation must respond with a suitable status code and some kind of an error message if invalid user is created.
+
+#### 4.17: bloglist expansion, step5
+
+Expand blogs so that each blog contains information on the creator of the blog.
+
+Modify adding new blogs so that when a new blog is created, any user from the database is designated as its creator (for example the one found first). Implement this according to part 4 chapter populate. Which user is designated as the creator does not matter just yet. The functionality is finished in exercise 4.19.
+
+Modify listing all blogs so that the creator's user information is displayed with the blog and listing all users also displays the blogs created by each user.
+
+#### 4.18: bloglist expansion, step6
+
+Implement token-based authentication according to part 4 chapter Token authentication.
+
+#### 4.19: bloglist expansion, step7
+
+Modify adding new blogs so that it is only possible if a valid token is sent with the HTTP POST request. The user identified by the token is designated as the creator of the blog.
+
+#### 4.20: bloglist expansion, step8
+
+This example from part 4 shows taking the token from the header with the getTokenFrom helper function.
+
+If you used the same solution, refactor taking the token to a middleware. The middleware should take the token from the Authorization header and place it to the token field of the request object.
+
+#### 4.21: bloglist expansion, step9
+
+Change the delete blog operation so that a blog can be deleted only by the user who added the blog. Therefore, deleting a blog is possible only if the token sent with the request is the same as that of the blog's creator.
+
+If deleting a blog is attempted without a token or by a wrong user, the operation should return a suitable status code.
+
+#### 4.22: bloglist expansion, step10
+
+Both the new blog creation and blog deletion need to find out the identity of the user who is doing the operation. The middleware tokenExtractor that we did in exercise 4.20 helps but still both the handlers of post and delete operations need to find out who is the user holding a specific token.
+
+Do now a new middleware userExtractor, that finds out the user and sets it to the request object. When you register the middleware in app.js
+
+Note that it is possible to register a middleware only for a specific set of routes. It would also be possible to register a middleware only for a specific operation.
+
+#### 4.23: bloglist expansion, step11
+
+After adding token based authentication the tests for adding a new blog broke down. Fix the tests. Also write a new test to ensure adding a blog fails with the proper status code 401 Unauthorized if a token is not provided.

@@ -1,3 +1,5 @@
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 const Blog = require('../models/blog')
 const User = require('../models/user')
 
@@ -52,6 +54,19 @@ const initialBlogs = [
   },
 ]
 
+const initialUsers = [
+  {
+    name: 'Initial User 1',
+    username: 'user1',
+    password: 'secret1',
+  },
+  {
+    name: 'Initial User 2',
+    username: 'user2',
+    password: 'secret2',
+  },
+]
+
 const blogsInDb = async () => {
   const blogs = await Blog.find({})
   return blogs.map((blog) => blog.toJSON())
@@ -62,8 +77,25 @@ const usersInDb = async () => {
   return users.map((u) => u.toJSON())
 }
 
+const getPasswordHash = async (password) => {
+  const passwordHash = await bcrypt.hash(password, 10)
+  return passwordHash
+}
+
+const getAuthToken = async (username) => {
+  const user = await User.findOne({ username })
+  const userForToken = {
+    username: user.username,
+    id: user._id,
+  }
+  return jwt.sign(userForToken, process.env.SECRET)
+}
+
 module.exports = {
   initialBlogs,
+  initialUsers,
   blogsInDb,
   usersInDb,
+  getPasswordHash,
+  getAuthToken,
 }
